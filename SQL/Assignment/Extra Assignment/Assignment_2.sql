@@ -1,0 +1,20 @@
+DROP DATABASE IF EXISTS Fresher;
+CREATE DATABASE Fresher;
+USE Fresher;
+
+CREATE TABLE Trainee(
+TraineeID			TINYINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+Full_Name			NVARCHAR(30),
+Birth_Date			DATE,
+Gender				ENUM('male', 'female','unknown'),
+ET_IQ				FLOAT UNSIGNED,CHECK(ET_IQ<=20),
+ET_Gmath			FLOAT UNSIGNED,CHECK(ET_Gmath<=20),
+ET_English			FLOAT UNSIGNED,CHECK(ET_English<=50),
+Training_Class		NVARCHAR(20),
+Evaluation_Notes	NVARCHAR(50)
+);
+
+-- Qs2
+ALTER TABLE Trainee
+ADD COLUMN VTI_Account TINYINT UNIQUE NOT NULL;
+

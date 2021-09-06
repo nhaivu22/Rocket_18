@@ -1,0 +1,13 @@
+DROP DATABASE IF EXISTS Student;
+
+CREATE DATABASE  Student;
+USE Student;
+
+CREATE TABLE information(
+ID				MEDIUMINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+`Name`			VARCHAR(30),
+BirthDate		DATE,
+Gender			ENUM('0','1'),
+IsDeletedFlag	BIT
+
+);
