@@ -22,8 +22,9 @@ DepartmentName	NVARCHAR (30) UNIQUE
  DepartmentID 	TINYINT UNSIGNED,
  PositionID 	TINYINT UNSIGNED,
  CreateDate 	DATE,
- FOREIGN KEY(DepartmentID) REFERENCES Department(DepartmentID),
-  FOREIGN KEY(PositionID) REFERENCES `Position`(PositionID)
+
+	FOREIGN KEY(DepartmentID) REFERENCES Department(DepartmentID),
+	FOREIGN KEY(PositionID) REFERENCES `Position`(PositionID)
  
  );
   CREATE TABLE `Group`(
@@ -31,7 +32,7 @@ DepartmentName	NVARCHAR (30) UNIQUE
   GroupName 	NVARCHAR(30) UNIQUE,
   CreatorID 	TINYINT UNSIGNED,
   CreateDate	 DATE,
-  FOREIGN KEY(CreatorID) REFERENCES `Account`(AccountId)
+	FOREIGN KEY(CreatorID) REFERENCES `Account`(AccountId)
 
   
   );
@@ -40,8 +41,8 @@ DepartmentName	NVARCHAR (30) UNIQUE
  GroupID  		TINYINT UNSIGNED PRIMARY KEY, 
  AccountID 		TINYINT UNSIGNED,
  JoinDate		 DATE,
- FOREIGN KEY (AccountID) REFERENCES `Account`(AccountID),
- FOREIGN KEY(GroupID) REFERENCES `Group`(GroupID)
+	FOREIGN KEY (AccountID) REFERENCES `Account`(AccountID),
+	FOREIGN KEY(GroupID) REFERENCES `Group`(GroupID)
  );
  
  CREATE TABLE  TypeQuestion(
@@ -63,9 +64,9 @@ DepartmentName	NVARCHAR (30) UNIQUE
  TypeID 			TINYINT UNSIGNED,
  CreatorID 			TINYINT UNSIGNED,
  CreateDate			 DATE,
- FOREIGN KEY( CategoryID) REFERENCES CategoryQuestion(CategoryID),
- FOREIGN KEY (TypeID)  REFERENCES TypeQuestion(TypeID),
- FOREIGN KEY(CreatorID) REFERENCES `Account`(AccountId) 
+	FOREIGN KEY( CategoryID) REFERENCES CategoryQuestion(CategoryID),
+	FOREIGN KEY (TypeID)  REFERENCES TypeQuestion(TypeID),
+	FOREIGN KEY(CreatorID) REFERENCES `Account`(AccountId) 
 
  
  
@@ -76,7 +77,7 @@ DepartmentName	NVARCHAR (30) UNIQUE
  Content 			NVARCHAR(50) ,
  QuestionID  		TINYINT UNSIGNED,
  isCorrect 			BOOLEAN,
- FOREIGN KEY (QuestionID) REFERENCES Question(QuestionID)
+	FOREIGN KEY (QuestionID) REFERENCES Question(QuestionID)
  );
 
 
@@ -88,16 +89,16 @@ CategoryID 		TINYINT UNSIGNED ,
 Duration 		ENUM('60','120','150','180') ,
 CreatorID 		TINYINT UNSIGNED , 
 CreateDate		 DATE,
-FOREIGN KEY(CategoryID) REFERENCES CategoryQuestion(CategoryID),
- FOREIGN KEY(CreatorID) REFERENCES `Account`(AccountId)
+	FOREIGN KEY(CategoryID) REFERENCES CategoryQuestion(CategoryID),
+	FOREIGN KEY(CreatorID) REFERENCES `Account`(AccountId)
 );
 
 CREATE TABLE ExamQuestion(
 ExamID 			TINYINT UNSIGNED ,
 QuestionID 		TINYINT UNSIGNED ,
-FOREIGN KEY(QuestionID) REFERENCES Question(QuestionID),
-FOREIGN KEY(ExamID) REFERENCES Exam(ExamID),
-PRIMARY KEY (ExamID,QuestionID)
+	FOREIGN KEY(QuestionID) REFERENCES Question(QuestionID),
+	FOREIGN KEY(ExamID) REFERENCES Exam(ExamID),
+	PRIMARY KEY (ExamID,QuestionID)
 
 );
 
@@ -185,15 +186,15 @@ INSERT INTO CategoryQuestion(CategoryName) VALUES
                         
 INSERT INTO Answer(Content, 			QuestionID,		isCorrect) VALUES
 					('Câu trả lời số 1',		1,			TRUE),
-                    ('Câu trả lời số 1',		5,			FALSE),
-                    ('Câu trả lời số 1',		3,			FALSE),
-                    ('Câu trả lời số 1',		4,			TRUE),
-                    ('Câu trả lời số 1',		2,			FALSE),
-                    ('Câu trả lời số 1',		6,			FALSE),
-                    ('Câu trả lời số 1',		7,			TRUE),
-                    ('Câu trả lời số 1',		10,			TRUE),
-                    ('Câu trả lời số 1',		8,			FALSE),
-                    ('Câu trả lời số 1',		9,			FALSE);
+                    ('Câu trả lời số 2',		5,			FALSE),
+                    ('Câu trả lời số 3',		3,			FALSE),
+                    ('Câu trả lời số 4',		4,			TRUE),
+                    ('Câu trả lời số 5',		2,			FALSE),
+                    ('Câu trả lời số 6',		6,			FALSE),
+                    ('Câu trả lời số 7',		7,			TRUE),
+                    ('Câu trả lời số 8',		10,			TRUE),
+                    ('Câu trả lời số 9',		8,			FALSE),
+                    ('Câu trả lời số 10',		9,			FALSE);
                     
 
                     
@@ -223,97 +224,144 @@ INSERT INTO ExamQuestion(ExamID,	QuestionID) VALUES
                         (4,			6),
                         (10,		1);
 		
--- 		Assignment 3-----\
 
--- Question 2: lấy ra tất cả các phòng ban
-SELECT *FROM Department;
+	-- Question 1: Viết lệnh để lấy ra danh sách nhân viên và thông tin phòng ban của họ			
+SELECT *
+FROM `Account` Ac
+JOIN Department Dp ON Ac.DepartmentID=Dp.DepartmentID;
 
--- Question 3: lấy ra id của phòng ban "Sale"
-SELECT DepartmentID
-FROM Department
-WHERE DepartmentName='Sale';
-
--- Question 4: lấy ra thông tin account có full name dài nhất
-SELECT * 
-FROM `Account` 
-WHERE LENGTH(Fullname) = (SELECT MAX(LENGTH(Fullname)) FROM `Account`) 
-ORDER BY Fullname DESC;
+                    
+-- Question 2: Viết lệnh để lấy ra thông tin các account được tạo sau ngày 20/12/2010
+	SELECT *
+    FROM `Account`
+    WHERE CreateDate > '2010-12-20';
 
 
+-- Question 3: Viết lệnh để lấy ra tất cả các developer
+SELECT *
+FROM `Account` A
+JOIN Position p ON A.PositionID= p.PositionID
+WHERE p.PositionName='Dev';
 
--- Question 5: Lấy ra thông tin account có full name dài nhất và thuộc phòng ban có id = 3
-SELECT * 
-FROM `Account` 
-WHERE LENGTH(Fullname) = (SELECT MAX(LENGTH(Fullname)) FROM `Account`) AND DepartmentID =3
-ORDER BY Fullname DESC;
--- cách 2
-SELECT length(Fullname),Fullname
-FROM `Account`
-WHERE DepartmentID =3
-ORDER BY length(Fullname) DESC
+-- Question 4: Viết lệnh để lấy ra danh sách các phòng ban có >3 nhân viên
+SELECT A.Email,A.Username,A.FullName,A.DepartmentID,D.DepartmentName, COUNT(DepartmentName)AS SL
+FROM `Account` A
+JOIN Department D ON A.DepartmentID=D.DepartmentID
+GROUP BY DepartmentName
+HAVING SL>3;
+
+-- Question 5: Viết lệnh để lấy ra danh sách câu hỏi được sử dụng trong đề thi nhiều nhất
+SELECT 		Q.QuestionID, Q.Content, Q.CategoryID, Q.TypeID, Q.CreatorID, Q.CreateDate, Count(Q.Content) 
+FROM		Question Q 
+INNER JOIN 	ExamQuestion EQ ON Q.QuestionID = EQ.QuestionID
+GROUP BY	Q.Content
+HAVING		COUNT(Q.Content) = (SELECT	MAX(CountQ)
+								FROM		
+										(SELECT 		COUNT(Q.QuestionID) AS CountQ
+										FROM			ExamQuestion EQ 
+										INNER JOIN 		Question Q ON EQ.QuestionID = Q.QuestionID
+										GROUP BY		Q.QuestionID) 
+                                        AS MaxContent);
+
+
+-- Question 6: Thông kê mỗi category Question được sử dụng trong bao nhiêu Question
+SELECT *,COUNT(*)
+FROM CategoryQuestion C
+JOIN Question Q ON C.CategoryID=Q.CategoryID
+GROUP BY Q.CategoryID;
+
+-- question 7: Thông kê mỗi Question được sử dụng trong bao nhiêu Exam
+SELECT *,COUNT(*)
+FROM Question Q
+JOIN ExamQuestion E ON Q.QuestionID=E.QuestionID
+GROUP BY E.QuestionID;
+
+-- question 8: Lấy ra Question có nhiều câu trả lời nhất
+SELECT 		Q.QuestionID, Q.Content, COUNT(A.QuestionID) 
+FROM		Question Q 
+INNER JOIN 	Answer A ON	Q.QuestionID = A.QuestionID
+GROUP BY	A.QuestionID
+HAVING		COUNT(A.QuestionID) =	(SELECT 	MAX(CountQ)
+									 FROM		(SELECT 		COUNT(A.QuestionID) AS CountQ
+												FROM			Answer A 
+												RIGHT JOIN  Question Q ON A.QuestionID = Q.QuestionID 
+												GROUP BY		A.QuestionID) AS MaxCountQ);
+                                                
+                                                
+                                                
+-- Question 9: Thống kê số lượng account trong mỗi group
+SELECT *,COUNT(Gr.AccountID)
+FROM `Group` G
+JOIN GroupAccount Gr ON G.GroupID=Gr.GroupID
+GROUP BY Gr.AccountID;
+
+-- Question 10: Tìm chức vụ có ít người nhất
+SELECT A.AccountID,A.Email,A.Username,A.FullName,P.PositionName,COUNT(PositionName)
+FROM `Account` A
+JOIN `Position` P ON A.PositionID=P.PositionID
+GROUP BY P.PositionName
+ORDER BY COUNT(PositionName) ASC
 LIMIT 1;
 
-
--- Question 6: Lấy ra tên group đã tham gia trước ngày 20/12/2019
-SELECT GroupName
-FROM `Group`
-WHERE CreateDate < '2019-12-20';
-
--- Question 7: Lấy ra ID của question có >= 4 câu trả lời
-SELECT QuestionID,count(QuestionID)
-FROM Answer
-GROUP BY  QuestionID
-HAVING count(QuestionID)>=4;
+-- Question 11: Thống kê mỗi phòng ban có bao nhiêu dev, test, scrum master, PM
+SELECT d.DepartmentID,d.DepartmentName, p.PositionName, count(p.PositionName)
+FROM `account` a
+INNER JOIN department d ON a.DepartmentID = d.DepartmentID
+INNER JOIN position p ON a.PositionID = p.PositionID
+GROUP BY d.DepartmentID, p.PositionID;
 
 
--- Question 8: Lấy ra các mã đề thi có thời gian thi >= 60 phút và được tạo trước ngày 20/12/2019
+-- Question 12: Lấy thông tin chi tiết của câu hỏi bao gồm: thông tin cơ bản của question, loại câu hỏi, ai là người tạo ra câu hỏi, câu trả lời là gì, …
+SELECT Q.QuestionID,Q.Content,Q.CreateDate,C.CategoryName,T.TypeName,A.Username
+ FROM Question Q
+ JOIN CategoryQuestion C ON Q.CategoryID=C.CategoryID
+ JOIN TypeQuestion T ON Q.TypeID=T.TypeID
+ JOIN `Account` A ON Q.CreatorID=A.AccountId;
+ 
+ -- Question 13: Lấy ra số lượng câu hỏi của mỗi loại tự luận hay trắc nghiệm
+ SELECT *,COUNT(TypeName)
+ FROM Question Q
+JOIN TypeQuestion T ON Q.TypeID=T.TypeID
+GROUP BY T.TypeName;
+
+-- Question 14:Lấy ra group không có account nào
 SELECT *
-FROM Exam
-WHERE Duration>=60 AND CreateDate < '2019-12-20';
+FROM `Group` G
+LEFT JOIN `Account` A ON G.CreatorID=A.AccountID
+WHERE A.AccountID IS NULL;
 
--- Question 9: Lấy ra 5 group được tạo gần đây nhất
+-- Question 16: Lấy ra question không có answer nào
 SELECT *
-FROM `Group`
-ORDER BY CreateDate DESC
-LIMIT 5;
+FROM Question Q
+LEFT JOIN Answer A ON Q.QuestionID=A.QuestionID
+WHERE A.Content IS NULL;
 
--- Question 10: Đếm số nhân viên thuộc department có id = 2
-SELECT DepartmentID ,COUNT(DepartmentID)
-FROM `Account`
-WHERE DepartmentID=2;
-
-
-
-
-
--- Question 11: Lấy ra nhân viên có tên bắt đầu bằng chữ "D" và kết thúc bằng chữ "o"
-SELECT Username
-FROM `Account` 
-WHERE Username LIKE('D%o');
-                    
--- Question 12: Xóa tất cả các exam được tạo trước ngày 20/12/2019
-DELETE
-FROM Exam
-WHERE CreateDate < '2019-12-20';
-
-
--- Xóa tất cả các question có nội dung bắt đầu bằng từ "câu hỏi"
-
- -- Question 14 Update thông tin của account có id = 5  thành tên "Nguyễn Bá Lộc" và email thành loc.nguyenba@vti.com.vn
-UPDATE `Account`
-SET FullName = 'Nguyễn Bá Lộc', 
-	Email = 'loc.nguyenba@vti.com.vn'
-WHERE AccountID = 5;
+-- a) Lấy các account thuộc nhóm thứ 1
+-- b) Lấy các account thuộc nhóm thứ 2
+-- c) Ghép 2 kết quả từ câu a) và câu b) sao cho không có record nào trùng nhau
 SELECT *
-FROM `Account` ;
+FROM `Account` A
+ JOIN GroupAccount G ON A.AccountID=G.AccountID
+ WHERE G.GroupID =1
+ UNION
+SELECT *
+FROM `Account` A
+ JOIN GroupAccount G ON A.AccountID=G.AccountID
+ WHERE G.GroupID =2;
+ 
+-- Question 18: 
+-- a) Lấy các group có lớn hơn 5 thành viên
+-- b) Lấy các group có nhỏ hơn 7 thành viên
+-- c) Ghép 2 kết quả từ câu a) và câu b)
 
-
--- Question 15: update account có id = 5 sẽ thuộc group có id = 4
-    
-    SELECT *
-FROM GroupAccount ;
-UPDATE GroupAccount
-SET AccountID = 5
-WHERE GroupID = 4;
-
-
+SELECT *,COUNT(gr.GroupID)
+FROM GroupAccount G
+JOIN `Group` gr ON G.GroupID=gr.GroupID
+GROUP BY gr.GroupID
+HAVING (COUNT(gr.GroupID))>5
+UNION
+SELECT *,COUNT(gr.GroupID)
+FROM GroupAccount G
+JOIN `Group` gr ON G.GroupID=gr.GroupID
+GROUP BY gr.GroupID
+HAVING (COUNT(gr.GroupID))<=7;
