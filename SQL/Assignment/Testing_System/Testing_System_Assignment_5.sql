@@ -22,9 +22,8 @@ DepartmentName	NVARCHAR (30) UNIQUE
  DepartmentID 	TINYINT UNSIGNED,
  PositionID 	TINYINT UNSIGNED,
  CreateDate 	DATE,
-
-	FOREIGN KEY(DepartmentID) REFERENCES Department(DepartmentID),
-	FOREIGN KEY(PositionID) REFERENCES `Position`(PositionID)
+ FOREIGN KEY(DepartmentID) REFERENCES Department(DepartmentID),
+  FOREIGN KEY(PositionID) REFERENCES `Position`(PositionID)
  
  );
   CREATE TABLE `Group`(
@@ -32,7 +31,7 @@ DepartmentName	NVARCHAR (30) UNIQUE
   GroupName 	NVARCHAR(30) UNIQUE,
   CreatorID 	TINYINT UNSIGNED,
   CreateDate	 DATE,
-	FOREIGN KEY(CreatorID) REFERENCES `Account`(AccountId)
+  FOREIGN KEY(CreatorID) REFERENCES `Account`(AccountId)
 
   
   );
@@ -41,8 +40,8 @@ DepartmentName	NVARCHAR (30) UNIQUE
  GroupID  		TINYINT UNSIGNED PRIMARY KEY, 
  AccountID 		TINYINT UNSIGNED,
  JoinDate		 DATE,
-	FOREIGN KEY (AccountID) REFERENCES `Account`(AccountID),
-	FOREIGN KEY(GroupID) REFERENCES `Group`(GroupID)
+ FOREIGN KEY (AccountID) REFERENCES `Account`(AccountID),
+ FOREIGN KEY(GroupID) REFERENCES `Group`(GroupID)
  );
  
  CREATE TABLE  TypeQuestion(
@@ -64,9 +63,9 @@ DepartmentName	NVARCHAR (30) UNIQUE
  TypeID 			TINYINT UNSIGNED,
  CreatorID 			TINYINT UNSIGNED,
  CreateDate			 DATE,
-	FOREIGN KEY( CategoryID) REFERENCES CategoryQuestion(CategoryID),
-	FOREIGN KEY (TypeID)  REFERENCES TypeQuestion(TypeID),
-	FOREIGN KEY(CreatorID) REFERENCES `Account`(AccountId) 
+ FOREIGN KEY( CategoryID) REFERENCES CategoryQuestion(CategoryID),
+ FOREIGN KEY (TypeID)  REFERENCES TypeQuestion(TypeID),
+ FOREIGN KEY(CreatorID) REFERENCES `Account`(AccountId) 
 
  
  
@@ -77,7 +76,7 @@ DepartmentName	NVARCHAR (30) UNIQUE
  Content 			NVARCHAR(50) ,
  QuestionID  		TINYINT UNSIGNED,
  isCorrect 			BOOLEAN,
-	FOREIGN KEY (QuestionID) REFERENCES Question(QuestionID)
+ FOREIGN KEY (QuestionID) REFERENCES Question(QuestionID)
  );
 
 
@@ -89,16 +88,16 @@ CategoryID 		TINYINT UNSIGNED ,
 Duration 		ENUM('60','120','150','180') ,
 CreatorID 		TINYINT UNSIGNED , 
 CreateDate		 DATE,
-	FOREIGN KEY(CategoryID) REFERENCES CategoryQuestion(CategoryID),
-	FOREIGN KEY(CreatorID) REFERENCES `Account`(AccountId)
+FOREIGN KEY(CategoryID) REFERENCES CategoryQuestion(CategoryID),
+ FOREIGN KEY(CreatorID) REFERENCES `Account`(AccountId)
 );
 
 CREATE TABLE ExamQuestion(
 ExamID 			TINYINT UNSIGNED ,
 QuestionID 		TINYINT UNSIGNED ,
-	FOREIGN KEY(QuestionID) REFERENCES Question(QuestionID),
-	FOREIGN KEY(ExamID) REFERENCES Exam(ExamID),
-	PRIMARY KEY (ExamID,QuestionID)
+FOREIGN KEY(QuestionID) REFERENCES Question(QuestionID),
+FOREIGN KEY(ExamID) REFERENCES Exam(ExamID),
+PRIMARY KEY (ExamID,QuestionID)
 
 );
 
@@ -186,15 +185,15 @@ INSERT INTO CategoryQuestion(CategoryName) VALUES
                         
 INSERT INTO Answer(Content, 			QuestionID,		isCorrect) VALUES
 					('Câu trả lời số 1',		1,			TRUE),
-                    ('Câu trả lời số 2',		5,			FALSE),
-                    ('Câu trả lời số 3',		3,			FALSE),
-                    ('Câu trả lời số 4',		4,			TRUE),
-                    ('Câu trả lời số 5',		2,			FALSE),
-                    ('Câu trả lời số 6',		6,			FALSE),
-                    ('Câu trả lời số 7',		7,			TRUE),
-                    ('Câu trả lời số 8',		10,			TRUE),
-                    ('Câu trả lời số 9',		8,			FALSE),
-                    ('Câu trả lời số 10',		9,			FALSE);
+                    ('Câu trả lời số 1',		5,			FALSE),
+                    ('Câu trả lời số 1',		3,			FALSE),
+                    ('Câu trả lời số 1',		4,			TRUE),
+                    ('Câu trả lời số 1',		2,			FALSE),
+                    ('Câu trả lời số 1',		6,			FALSE),
+                    ('Câu trả lời số 1',		7,			TRUE),
+                    ('Câu trả lời số 1',		10,			TRUE),
+                    ('Câu trả lời số 1',		8,			FALSE),
+                    ('Câu trả lời số 1',		9,			FALSE);
                     
 
                     
@@ -225,143 +224,144 @@ INSERT INTO ExamQuestion(ExamID,	QuestionID) VALUES
                         (10,		1);
 		
 
-	-- Question 1: Viết lệnh để lấy ra danh sách nhân viên và thông tin phòng ban của họ			
-SELECT *
-FROM `Account` Ac
-JOIN Department Dp ON Ac.DepartmentID=Dp.DepartmentID;
-
+				
+-- -------------------Sử Dụng subquery---------------
                     
--- Question 2: Viết lệnh để lấy ra thông tin các account được tạo sau ngày 20/12/2010
-	SELECT *
-    FROM `Account`
-    WHERE CreateDate > '2010-12-20';
-
-
--- Question 3: Viết lệnh để lấy ra tất cả các developer
-SELECT *
-FROM `Account` A
-JOIN Position p ON A.PositionID= p.PositionID
-WHERE p.PositionName='Dev';
-
--- Question 4: Viết lệnh để lấy ra danh sách các phòng ban có >3 nhân viên
-SELECT A.Email,A.Username,A.FullName,A.DepartmentID,D.DepartmentName, COUNT(DepartmentName)AS SL
+-- Question 1: Tạo view có chứa danh sách nhân viên thuộc phòng ban sale
+DROP VIEW View_DSNV_Sale;
+CREATE VIEW View_DSNV_Sale
+AS
+SELECT A.AccountID,A.Email,A.Username,A.FullName,D.DepartmentName
 FROM `Account` A
 JOIN Department D ON A.DepartmentID=D.DepartmentID
-GROUP BY DepartmentName
-HAVING SL>3;
-
--- Question 5: Viết lệnh để lấy ra danh sách câu hỏi được sử dụng trong đề thi nhiều nhất
-SELECT 		Q.QuestionID, Q.Content, Q.CategoryID, Q.TypeID, Q.CreatorID, Q.CreateDate, Count(Q.Content) 
-FROM		Question Q 
-INNER JOIN 	ExamQuestion EQ ON Q.QuestionID = EQ.QuestionID
-GROUP BY	Q.Content
-HAVING		COUNT(Q.Content) = (SELECT	MAX(CountQ)
-								FROM		
-										(SELECT 		COUNT(Q.QuestionID) AS CountQ
-										FROM			ExamQuestion EQ 
-										INNER JOIN 		Question Q ON EQ.QuestionID = Q.QuestionID
-										GROUP BY		Q.QuestionID) 
-                                        AS MaxContent);
+WHERE D.DepartmentID=( SELECT De.DepartmentID
+						FROM Department De
+                        WHERE De.DepartmentName='Sale');
+						
+SELECT *
+FROM View_DSNV_Sale;
 
 
--- Question 6: Thông kê mỗi category Question được sử dụng trong bao nhiêu Question
-SELECT *,COUNT(*)
-FROM CategoryQuestion C
-JOIN Question Q ON C.CategoryID=Q.CategoryID
-GROUP BY Q.CategoryID;
+-- Question 2: Tạo view có chứa thông tin các account tham gia vào nhiều group nhất
 
--- question 7: Thông kê mỗi Question được sử dụng trong bao nhiêu Exam
-SELECT *,COUNT(*)
+DROP VIEW View_AccountMaxGroup;
+CREATE VIEW View_AccountMaxGroup
+AS
+SELECT 		A.*, COUNT(GA.AccountID) AS 'SO LUONG'
+FROM		`Account` A 
+INNER JOIN 	GroupAccount GA ON A.AccountID = GA.AccountID
+GROUP BY	A.AccountID
+HAVING		COUNT(GA.AccountID) = (
+									SELECT 		COUNT(GA.AccountID) 
+									FROM		`Account` A 
+									INNER JOIN 	GroupAccount GA ON A.AccountID = GA.AccountID
+									GROUP BY	A.AccountID
+									ORDER BY	COUNT(GA.AccountID) DESC
+									LIMIT		1
+								  );
+                                  
+                                  
+		SELECT *
+        FROM View_AccountMaxGroup;
+                                  
+		-- Question 3: Tạo view có chứa câu hỏi có những content quá dài (content quá 300 từ dược coi là quá dài) và xóa nó đi
+        DROP VIEW View_ContentMax;
+		CREATE VIEW View_ContentMax
+        AS 
+        SELECT *
+        FROM Question 
+        WHERE length(Content)>(SELECT Q.Content
+								FROM Question Q
+                                WHERE length(Q.Content)=20);
+	SELECT*
+    FROM View_ContentMax;
+        
+        
+-- Question 4: Tạo view có chứa danh sách các phòng ban có nhiều nhân viên nhất
+CREATE OR REPLACE VIEW View_DepartmentMax_Account
+AS
+	SELECT 		*, COUNT(A.DepartmentID)
+	FROM		Department D 
+	INNER JOIN 	`Account` A ON D.DepartmentID = A.DepartmentID
+	GROUP BY	D.DepartmentID
+	HAVING		COUNT(A.DepartmentID) = (
+										SELECT 		COUNT(A.DepartmentID)
+										FROM		Department D 
+										INNER JOIN 	`Account` A ON D.DepartmentID = A.DepartmentID
+										GROUP BY	D.DepartmentID
+										ORDER BY	COUNT(A.DepartmentID) DESC
+										LIMIT		1
+										);			
+
+-- Question 5: Tạo view có chứa tất các các câu hỏi do user họ Nguyễn tạoview_user
+DROP VIEW View_User_Nguyen;
+CREATE VIEW View_User_Nguyen
+AS
+SELECT A.*
 FROM Question Q
-JOIN ExamQuestion E ON Q.QuestionID=E.QuestionID
-GROUP BY E.QuestionID;
+JOIN `Account` A ON Q.CreatorID=A.AccountID
+WHERE A.FullName =( SELECT Ac.FullName
+					FROM Question Qs
+					JOIN `Account` Ac ON Qs.CreatorID=Ac.AccountID
+                    WHERE Ac.FullName LIKE 'Nguyễn%');
+                    
+					
 
--- question 8: Lấy ra Question có nhiều câu trả lời nhất
-SELECT 		Q.QuestionID, Q.Content, COUNT(A.QuestionID) 
-FROM		Question Q 
-INNER JOIN 	Answer A ON	Q.QuestionID = A.QuestionID
-GROUP BY	A.QuestionID
-HAVING		COUNT(A.QuestionID) =	(SELECT 	MAX(CountQ)
-									 FROM		(SELECT 		COUNT(A.QuestionID) AS CountQ
-												FROM			Answer A 
-												RIGHT JOIN  Question Q ON A.QuestionID = Q.QuestionID 
-												GROUP BY		A.QuestionID) AS MaxCountQ);
-                                                
-                                                
-                                                
--- Question 9: Thống kê số lượng account trong mỗi group
-SELECT *,COUNT(Gr.AccountID)
-FROM `Group` G
-JOIN GroupAccount Gr ON G.GroupID=Gr.GroupID
-GROUP BY Gr.AccountID;
-
--- Question 10: Tìm chức vụ có ít người nhất
-SELECT A.AccountID,A.Email,A.Username,A.FullName,P.PositionName,COUNT(PositionName)
-FROM `Account` A
-JOIN `Position` P ON A.PositionID=P.PositionID
-GROUP BY P.PositionName
-ORDER BY COUNT(PositionName) ASC
-LIMIT 1;
-
--- Question 11: Thống kê mỗi phòng ban có bao nhiêu dev, test, scrum master, PM
-SELECT d.DepartmentID,d.DepartmentName, p.PositionName, count(p.PositionName)
-FROM `Account` a
-INNER JOIN Department d ON a.DepartmentID = d.DepartmentID
-INNER JOIN `Position` p ON a.PositionID = p.PositionID
-GROUP BY d.DepartmentID, p.PositionID;
-
-
--- Question 12: Lấy thông tin chi tiết của câu hỏi bao gồm: thông tin cơ bản của question, loại câu hỏi, ai là người tạo ra câu hỏi, câu trả lời là gì, …
-SELECT Q.QuestionID,Q.Content,Q.CreateDate,C.CategoryName,T.TypeName,A.Username
- FROM Question Q
- JOIN CategoryQuestion C ON Q.CategoryID=C.CategoryID
- JOIN TypeQuestion T ON Q.TypeID=T.TypeID
- JOIN `Account` A ON Q.CreatorID=A.AccountId;
- 
- -- Question 13: Lấy ra số lượng câu hỏi của mỗi loại tự luận hay trắc nghiệm
- SELECT *,COUNT(TypeName)
- FROM Question Q
-JOIN TypeQuestion T ON Q.TypeID=T.TypeID
-GROUP BY T.TypeName;
-
--- Question 14:Lấy ra group không có account nào
 SELECT *
-FROM `Group` G
-LEFT JOIN `Account` A ON G.CreatorID=A.AccountID
-WHERE A.AccountID IS NULL;
+FROM View_User_Nguyen;
 
--- Question 16: Lấy ra question không có answer nào
-SELECT *
-FROM Question Q
-LEFT JOIN Answer A ON Q.QuestionID=A.QuestionID
-WHERE A.Content IS NULL;
 
--- a) Lấy các account thuộc nhóm thứ 1
--- b) Lấy các account thuộc nhóm thứ 2
--- c) Ghép 2 kết quả từ câu a) và câu b) sao cho không có record nào trùng nhau
-SELECT *
-FROM `Account` A
- JOIN GroupAccount G ON A.AccountID=G.AccountID
- WHERE G.GroupID =1
- UNION
-SELECT *
-FROM `Account` A
- JOIN GroupAccount G ON A.AccountID=G.AccountID
- WHERE G.GroupID =2;
- 
--- Question 18: 
--- a) Lấy các group có lớn hơn 5 thành viên
--- b) Lấy các group có nhỏ hơn 7 thành viên
--- c) Ghép 2 kết quả từ câu a) và câu b)
+-- ------------ Dùng  CTE  ------------
 
-SELECT *,COUNT(gr.GroupID)
-FROM GroupAccount G
-JOIN `Group` gr ON G.GroupID=gr.GroupID
-GROUP BY gr.GroupID
-HAVING (COUNT(gr.GroupID))>5
-UNION
-SELECT *,COUNT(gr.GroupID)
-FROM GroupAccount G
-JOIN `Group` gr ON G.GroupID=gr.GroupID
-GROUP BY gr.GroupID
-HAVING (COUNT(gr.GroupID))<=7;
+-- Question 1: Tạo view có chứa danh sách nhân viên thuộc phòng ban sale
+WITH DSNV_Sale AS(
+	SELECT		A.*, D.DepartmentName
+	FROM 		`Account` A 
+	INNER JOIN  Department  D	ON	A.DepartmentID = D.DepartmentID
+	WHERE		D.DepartmentName = 'Sale'
+)
+SELECT 	*
+FROM 	DSNV_Sale;
+
+
+-- Question 2: Tạo view có chứa thông tin các account tham gia vào nhiều group nhất
+WITH Account_Join_Group AS(
+	SELECT 		COUNT(GA.AccountID) 
+	FROM		`Account` A 
+	INNER JOIN 	GroupAccount GA ON A.AccountID = GA.AccountID
+	GROUP BY	A.AccountID
+	ORDER BY	COUNT(GA.AccountID) DESC
+	LIMIT		1
+)
+SELECT 		A.*, COUNT(GA.AccountID) 
+FROM		`Account` A 
+INNER JOIN 	GroupAccount GA ON A.AccountID = GA.AccountID
+GROUP BY	A.AccountID
+HAVING		COUNT(GA.AccountID) = (SELECT * FROM Account_Join_Group);
+
+-- Question 4: Tạo view có chứa danh sách các phòng ban có nhiều nhân viên nhất
+WITH Department_Acount
+AS (
+	SELECT 		COUNT(A.DepartmentID)
+	FROM		Department D 
+	INNER JOIN 	`Account` A ON D.DepartmentID = A.DepartmentID
+	GROUP BY	D.DepartmentID
+	HAVING		COUNT(A.DepartmentID)
+    ORDER BY	COUNT(A.DepartmentID) DESC
+    LIMIT		1
+),
+Department_Max AS
+(  	SELECT 		D.*, COUNT(A.DepartmentID) AS COUNT_DEPARTMENT
+	FROM		Department D 
+	INNER JOIN `Account` A ON D.DepartmentID = A.DepartmentID
+	GROUP BY	D.DepartmentID
+	HAVING		COUNT(A.DepartmentID)
+                                        )
+SELECT 	*
+FROM	Department_Max
+WHERE	COUNT_DEPARTMENT = (
+							SELECT 	* 
+							FROM 	Department_Acount);
+                            
+  -- Question 5: Tạo view có chứa tất các các câu hỏi do user họ Nguyễn tạoview_user
+  

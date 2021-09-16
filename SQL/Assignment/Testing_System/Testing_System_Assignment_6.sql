@@ -22,9 +22,8 @@ DepartmentName	NVARCHAR (30) UNIQUE
  DepartmentID 	TINYINT UNSIGNED,
  PositionID 	TINYINT UNSIGNED,
  CreateDate 	DATE,
-
-	FOREIGN KEY(DepartmentID) REFERENCES Department(DepartmentID),
-	FOREIGN KEY(PositionID) REFERENCES `Position`(PositionID)
+ FOREIGN KEY(DepartmentID) REFERENCES Department(DepartmentID),
+  FOREIGN KEY(PositionID) REFERENCES `Position`(PositionID)
  
  );
   CREATE TABLE `Group`(
@@ -32,7 +31,7 @@ DepartmentName	NVARCHAR (30) UNIQUE
   GroupName 	NVARCHAR(30) UNIQUE,
   CreatorID 	TINYINT UNSIGNED,
   CreateDate	 DATE,
-	FOREIGN KEY(CreatorID) REFERENCES `Account`(AccountId)
+  FOREIGN KEY(CreatorID) REFERENCES `Account`(AccountId)
 
   
   );
@@ -41,8 +40,8 @@ DepartmentName	NVARCHAR (30) UNIQUE
  GroupID  		TINYINT UNSIGNED PRIMARY KEY, 
  AccountID 		TINYINT UNSIGNED,
  JoinDate		 DATE,
-	FOREIGN KEY (AccountID) REFERENCES `Account`(AccountID),
-	FOREIGN KEY(GroupID) REFERENCES `Group`(GroupID)
+ FOREIGN KEY (AccountID) REFERENCES `Account`(AccountID),
+ FOREIGN KEY(GroupID) REFERENCES `Group`(GroupID)
  );
  
  CREATE TABLE  TypeQuestion(
@@ -64,9 +63,9 @@ DepartmentName	NVARCHAR (30) UNIQUE
  TypeID 			TINYINT UNSIGNED,
  CreatorID 			TINYINT UNSIGNED,
  CreateDate			 DATE,
-	FOREIGN KEY( CategoryID) REFERENCES CategoryQuestion(CategoryID),
-	FOREIGN KEY (TypeID)  REFERENCES TypeQuestion(TypeID),
-	FOREIGN KEY(CreatorID) REFERENCES `Account`(AccountId) 
+ FOREIGN KEY( CategoryID) REFERENCES CategoryQuestion(CategoryID),
+ FOREIGN KEY (TypeID)  REFERENCES TypeQuestion(TypeID),
+ FOREIGN KEY(CreatorID) REFERENCES `Account`(AccountId) 
 
  
  
@@ -77,7 +76,7 @@ DepartmentName	NVARCHAR (30) UNIQUE
  Content 			NVARCHAR(50) ,
  QuestionID  		TINYINT UNSIGNED,
  isCorrect 			BOOLEAN,
-	FOREIGN KEY (QuestionID) REFERENCES Question(QuestionID)
+ FOREIGN KEY (QuestionID) REFERENCES Question(QuestionID)
  );
 
 
@@ -89,16 +88,16 @@ CategoryID 		TINYINT UNSIGNED ,
 Duration 		ENUM('60','120','150','180') ,
 CreatorID 		TINYINT UNSIGNED , 
 CreateDate		 DATE,
-	FOREIGN KEY(CategoryID) REFERENCES CategoryQuestion(CategoryID),
-	FOREIGN KEY(CreatorID) REFERENCES `Account`(AccountId)
+FOREIGN KEY(CategoryID) REFERENCES CategoryQuestion(CategoryID),
+ FOREIGN KEY(CreatorID) REFERENCES `Account`(AccountId)
 );
 
 CREATE TABLE ExamQuestion(
 ExamID 			TINYINT UNSIGNED ,
 QuestionID 		TINYINT UNSIGNED ,
-	FOREIGN KEY(QuestionID) REFERENCES Question(QuestionID),
-	FOREIGN KEY(ExamID) REFERENCES Exam(ExamID),
-	PRIMARY KEY (ExamID,QuestionID)
+FOREIGN KEY(QuestionID) REFERENCES Question(QuestionID),
+FOREIGN KEY(ExamID) REFERENCES Exam(ExamID) ON DELETE CASCADE,
+PRIMARY KEY (ExamID,QuestionID)
 
 );
 
@@ -186,15 +185,15 @@ INSERT INTO CategoryQuestion(CategoryName) VALUES
                         
 INSERT INTO Answer(Content, 			QuestionID,		isCorrect) VALUES
 					('Câu trả lời số 1',		1,			TRUE),
-                    ('Câu trả lời số 2',		5,			FALSE),
-                    ('Câu trả lời số 3',		3,			FALSE),
-                    ('Câu trả lời số 4',		4,			TRUE),
-                    ('Câu trả lời số 5',		2,			FALSE),
-                    ('Câu trả lời số 6',		6,			FALSE),
-                    ('Câu trả lời số 7',		7,			TRUE),
-                    ('Câu trả lời số 8',		10,			TRUE),
-                    ('Câu trả lời số 9',		8,			FALSE),
-                    ('Câu trả lời số 10',		9,			FALSE);
+                    ('Câu trả lời số 1',		5,			FALSE),
+                    ('Câu trả lời số 1',		3,			FALSE),
+                    ('Câu trả lời số 1',		4,			TRUE),
+                    ('Câu trả lời số 1',		2,			FALSE),
+                    ('Câu trả lời số 1',		6,			FALSE),
+                    ('Câu trả lời số 1',		7,			TRUE),
+                    ('Câu trả lời số 1',		10,			TRUE),
+                    ('Câu trả lời số 1',		8,			FALSE),
+                    ('Câu trả lời số 1',		9,			FALSE);
                     
 
                     
@@ -225,143 +224,161 @@ INSERT INTO ExamQuestion(ExamID,	QuestionID) VALUES
                         (10,		1);
 		
 
-	-- Question 1: Viết lệnh để lấy ra danh sách nhân viên và thông tin phòng ban của họ			
-SELECT *
-FROM `Account` Ac
-JOIN Department Dp ON Ac.DepartmentID=Dp.DepartmentID;
-
-                    
--- Question 2: Viết lệnh để lấy ra thông tin các account được tạo sau ngày 20/12/2010
-	SELECT *
-    FROM `Account`
-    WHERE CreateDate > '2010-12-20';
-
-
--- Question 3: Viết lệnh để lấy ra tất cả các developer
-SELECT *
-FROM `Account` A
-JOIN Position p ON A.PositionID= p.PositionID
-WHERE p.PositionName='Dev';
-
--- Question 4: Viết lệnh để lấy ra danh sách các phòng ban có >3 nhân viên
-SELECT A.Email,A.Username,A.FullName,A.DepartmentID,D.DepartmentName, COUNT(DepartmentName)AS SL
-FROM `Account` A
-JOIN Department D ON A.DepartmentID=D.DepartmentID
-GROUP BY DepartmentName
-HAVING SL>3;
-
--- Question 5: Viết lệnh để lấy ra danh sách câu hỏi được sử dụng trong đề thi nhiều nhất
-SELECT 		Q.QuestionID, Q.Content, Q.CategoryID, Q.TypeID, Q.CreatorID, Q.CreateDate, Count(Q.Content) 
-FROM		Question Q 
-INNER JOIN 	ExamQuestion EQ ON Q.QuestionID = EQ.QuestionID
-GROUP BY	Q.Content
-HAVING		COUNT(Q.Content) = (SELECT	MAX(CountQ)
-								FROM		
-										(SELECT 		COUNT(Q.QuestionID) AS CountQ
-										FROM			ExamQuestion EQ 
-										INNER JOIN 		Question Q ON EQ.QuestionID = Q.QuestionID
-										GROUP BY		Q.QuestionID) 
-                                        AS MaxContent);
+				
+-- Question 1: Tạo store để người dùng nhập vào tên phòng ban và in ra tất cả các account thuộc phòng ban đó
+DROP PROCEDURE IF EXISTS Pr_AccountInDepartment;
+DELIMITER $$  
+ CREATE PROCEDURE Pr_AccountInDepartment (IN in_DepartmentNameID TINYINT UNSIGNED )
+ BEGIN 
+						SELECT d.DepartmentName,a.AccountID,a.Email,a.Username,a.FullName,a.PositionID,a.CreateDate
+						FROM Department d
+						JOIN `Account` a On d.DepartmentID=a.DepartmentID
+                        where d.DepartmentID=in_DepartmentNameID;
+                        END $$
+ DELIMITER ;   
+call testingsystem_2.Pr_AccountInDepartment(1);
 
 
--- Question 6: Thông kê mỗi category Question được sử dụng trong bao nhiêu Question
-SELECT *,COUNT(*)
-FROM CategoryQuestion C
-JOIN Question Q ON C.CategoryID=Q.CategoryID
-GROUP BY Q.CategoryID;
+-- Question 3: Tạo store để thống kê mỗi type question có bao nhiêu question được tạo trong tháng hiện tại
+DROP PROCEDURE IF EXISTS Pr_AccountInDepartment;
+DELIMITER $$  
+ CREATE PROCEDURE Pr_typeQuestion()
+ BEGIN
+	SELECT		COUNT(TypeID)
+    FROM		Question
+    WHERE		MONTH(CreateDate) = Month(NOW());
+END $$
+DELIMITER ;
+call testingsystem_2.Pr_typeQuestion();
 
--- question 7: Thông kê mỗi Question được sử dụng trong bao nhiêu Exam
-SELECT *,COUNT(*)
-FROM Question Q
-JOIN ExamQuestion E ON Q.QuestionID=E.QuestionID
-GROUP BY E.QuestionID;
+-- Question 4: Tạo store để trả ra id của type question có nhiều câu hỏi nhất
+DROP PROCEDURE IF EXISTS Pr_idType;
+DELIMITER $$
+CREATE PROCEDURE Pr_idType()
+BEGIN 
+			SELECT T.*,COUNT(Q.TypeID)
+			FROM Question Q 
+			JOIN TypeQuestion T ON Q.TypeID=T.TypeID
+			GROUP BY Q.TypeID
+			ORDER BY COUNT(Q.TypeID) DESC
+			LIMIT 1;
+		END $$
+	DELIMITER ;
+call testingsystem_2.Pr_typeQuestion();
 
--- question 8: Lấy ra Question có nhiều câu trả lời nhất
-SELECT 		Q.QuestionID, Q.Content, COUNT(A.QuestionID) 
-FROM		Question Q 
-INNER JOIN 	Answer A ON	Q.QuestionID = A.QuestionID
-GROUP BY	A.QuestionID
-HAVING		COUNT(A.QuestionID) =	(SELECT 	MAX(CountQ)
-									 FROM		(SELECT 		COUNT(A.QuestionID) AS CountQ
-												FROM			Answer A 
-												RIGHT JOIN  Question Q ON A.QuestionID = Q.QuestionID 
-												GROUP BY		A.QuestionID) AS MaxCountQ);
-                                                
-                                                
-                                                
--- Question 9: Thống kê số lượng account trong mỗi group
-SELECT *,COUNT(Gr.AccountID)
-FROM `Group` G
-JOIN GroupAccount Gr ON G.GroupID=Gr.GroupID
-GROUP BY Gr.AccountID;
-
--- Question 10: Tìm chức vụ có ít người nhất
-SELECT A.AccountID,A.Email,A.Username,A.FullName,P.PositionName,COUNT(PositionName)
-FROM `Account` A
-JOIN `Position` P ON A.PositionID=P.PositionID
-GROUP BY P.PositionName
-ORDER BY COUNT(PositionName) ASC
-LIMIT 1;
-
--- Question 11: Thống kê mỗi phòng ban có bao nhiêu dev, test, scrum master, PM
-SELECT d.DepartmentID,d.DepartmentName, p.PositionName, count(p.PositionName)
-FROM `Account` a
-INNER JOIN Department d ON a.DepartmentID = d.DepartmentID
-INNER JOIN `Position` p ON a.PositionID = p.PositionID
-GROUP BY d.DepartmentID, p.PositionID;
+-- Question 5: Sử dụng store ở question 4 để tìm ra tên của type question
 
 
--- Question 12: Lấy thông tin chi tiết của câu hỏi bao gồm: thông tin cơ bản của question, loại câu hỏi, ai là người tạo ra câu hỏi, câu trả lời là gì, …
-SELECT Q.QuestionID,Q.Content,Q.CreateDate,C.CategoryName,T.TypeName,A.Username
- FROM Question Q
- JOIN CategoryQuestion C ON Q.CategoryID=C.CategoryID
- JOIN TypeQuestion T ON Q.TypeID=T.TypeID
- JOIN `Account` A ON Q.CreatorID=A.AccountId;
+-- Question 6: Viết 1 store cho phép người dùng nhập vào 1 chuỗi và trả về group có tên  chứa chuỗi của người dùng nhập vào 
+-- hoặc trả về user có username chứa chuỗi của người dùng nhập vào
+
+DROP PROCEDURE IF EXISTS sp_nameOfGroupOrUserName;
+DELIMITER $$
+CREATE PROCEDURE Pr_NameGroup(IN in_GroupName VARCHAR(50), IN in_Usename VARCHAR(30))
+BEGIN
+	SELECT a.Username,a.FullName,g.GroupID,g.GroupName
+    FROM `Account` a
+    JOIN `Group` g ON a.AccountID=g.CreatorID
+    WHERE g.GroupName=in_GroupName OR a.Username=in_Usename;
+
+END$$
+DELIMITER ;
+
+-- Question 7: Viết 1 store cho phép người dùng nhập vào thông tin fullName, email và 
+ -- trong store sẽ tự động gán:
+-- username sẽ giống email nhưng bỏ phần @..mail đi
+-- positionID: sẽ có default là developer
+-- departmentID: sẽ được cho vào 1 phòng chờ
+-- Sau đó in ra kết quả tạo thành công
+DROP PROCEDURE IF EXISTS Pr_Inster;
+DELIMITER $$
+CREATE PROCEDURE Pr_Inster(IN in_fullName VARCHAR(50), IN in_Email VARCHAR(30))
+BEGIN
+	DECLARE Username VARCHAR(50) DEFAULT SUBSTRING_INDEX(in_Email,'@',1);
+    DECLARE PositionID TINYINT UNSIGNED DEFAULT 1;
+    DECLARE DepartmentID TINYINT UNSIGNED DEFAULT 1;
+    DECLARE CreateDate DATETIME DEFAULT NOW();
+	
+	INSERT INTO `Account` 	(Email		,Username, FullName		, DepartmentID,	PositionID,	CreateDate)
+    VALUE					(in_email	,Username, in_fullName	, DepartmentID, PositionID, CreateDate);
+	
+    SELECT 	*
+    FROM 	`Account`;
+    
+
+END$$
+DELIMITER ;
+
+
+-- Question 8: Viết 1 store cho phép người dùng nhập vào Essay hoặc Multiple-Choice
+ -- để thống kê câu hỏi essay hoặc multiple-choice nào có content dài nhất
  
- -- Question 13: Lấy ra số lượng câu hỏi của mỗi loại tự luận hay trắc nghiệm
- SELECT *,COUNT(TypeName)
- FROM Question Q
-JOIN TypeQuestion T ON Q.TypeID=T.TypeID
-GROUP BY T.TypeName;
-
--- Question 14:Lấy ra group không có account nào
-SELECT *
-FROM `Group` G
-LEFT JOIN `Account` A ON G.CreatorID=A.AccountID
-WHERE A.AccountID IS NULL;
-
--- Question 16: Lấy ra question không có answer nào
-SELECT *
-FROM Question Q
-LEFT JOIN Answer A ON Q.QuestionID=A.QuestionID
-WHERE A.Content IS NULL;
-
--- a) Lấy các account thuộc nhóm thứ 1
--- b) Lấy các account thuộc nhóm thứ 2
--- c) Ghép 2 kết quả từ câu a) và câu b) sao cho không có record nào trùng nhau
-SELECT *
-FROM `Account` A
- JOIN GroupAccount G ON A.AccountID=G.AccountID
- WHERE G.GroupID =1
- UNION
-SELECT *
-FROM `Account` A
- JOIN GroupAccount G ON A.AccountID=G.AccountID
- WHERE G.GroupID =2;
  
--- Question 18: 
--- a) Lấy các group có lớn hơn 5 thành viên
--- b) Lấy các group có nhỏ hơn 7 thành viên
--- c) Ghép 2 kết quả từ câu a) và câu b)
+ DROP PROCEDURE IF EXISTS Pr_MaxContent;
+ DELIMITER $$
+CREATE PROCEDURE Pr_MaxContent(IN in_TypeName VARCHAR(15))
+BEGIN 
+	if (in_TypeName='Essay') then
+			SELECT Q.QuestionID,Q.Content,Q.TypeID,T.TypeName,MAX(length(Q.Content))
+			FROM Question Q
+			JOIN TypeQuestion T ON Q.TypeID=T.TypeID
+			WHERE Q.TypeID=2;
+    ELSEIF (in_TypeName='Multiple-Choice') THEN
+			SELECT Q.QuestionID,Q.Content,Q.TypeID,T.TypeName,MAX(length(Q.Content))
+			FROM Question Q
+			JOIN TypeQuestion T ON Q.TypeID=T.TypeID
+			WHERE Q.TypeID=1;
+    END IF;
+END $$
+DELIMITER ;
 
-SELECT *,COUNT(gr.GroupID)
-FROM GroupAccount G
-JOIN `Group` gr ON G.GroupID=gr.GroupID
-GROUP BY gr.GroupID
-HAVING (COUNT(gr.GroupID))>5
-UNION
-SELECT *,COUNT(gr.GroupID)
-FROM GroupAccount G
-JOIN `Group` gr ON G.GroupID=gr.GroupID
-GROUP BY gr.GroupID
-HAVING (COUNT(gr.GroupID))<=7;
+
+
+ -- Question 9: Viết 1 store cho phép người dùng xóa exam dựa vào ID
+ DROP PROCEDURE IF EXISTS Pr_DelID;
+ DELIMITER $$
+CREATE PROCEDURE Pr_DelID(IN in_ExamID TINYINT UNSIGNED)
+BEGIN 
+	DELETE 
+    FROM Exam
+    WHERE ExamID=in_ExamID;
+END $$
+DELIMITER ;
+
+-- Question 10: Tìm ra các exam được tạo từ 3 năm trước và xóa các exam đó đi (sử 
+ -- dụng store ở câu 9 để xóa)
+-- Sau đó in số lượng record đã remove từ các table liên quan trong khi removing
+DROP PROCEDURE IF EXISTS sp_DeleteUser3Years;
+DELIMITER $$
+CREATE PROCEDURE Pr_ExamID()
+BEGIN
+	WITH Exam_3Year AS(
+		SELECT 	ExamID
+		FROM 	Exam
+		WHERE	(YEAR(NOW()) - YEAR(CreateDate)) > 3
+    )
+	DELETE
+    FROM 	Exam
+    WHERE 	ExamID = (SELECT * FROM Exam_3Year);
+END$$
+DELIMITER ;
+
+-- Question 11: Viết store cho phép người dùng xóa phòng ban bằng cách người dùng 
+-- nhập vào tên phòng ban và các account thuộc phòng ban đó sẽ được chuyển về phòng ban default là phòng ban chờ việc
+DROP PROCEDURE IF EXISTS Pr_Delete_Department;
+DELIMITER $$
+CREATE PROCEDURE Pr_Delete_Department(IN in_DepartmentName NVARCHAR(30))
+BEGIN
+	UPDATE 	`Account`
+    SET		DepartmentID = 10
+    WHERE	DepartmentID = (SELECT 	DepartmentID	
+							FROM	Department
+							WHERE 	DepartmentName = in_DepartmentName);
+	DELETE 
+    FROM	Department
+    WHERE	DepartmentName = in_DepartmentName;
+END$$
+DELIMITER ;
+
+
+
