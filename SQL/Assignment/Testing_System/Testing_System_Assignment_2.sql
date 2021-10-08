@@ -11,7 +11,7 @@ DepartmentName	NVARCHAR (30) UNIQUE
 
  CREATE TABLE `Position`(
  PositionID 	TINYINT  UNSIGNED PRIMARY KEY AUTO_INCREMENT,
- PositionName 	ENUM('Dev', 'Test', 'Scrum Master', 'PM') UNIQUE
+ PositionName 	ENUM('Dev', 'Test', 'Scrum Master', 'PM','VT') UNIQUE
  );
  
  CREATE TABLE `Account`(
@@ -223,8 +223,8 @@ INSERT INTO ExamQuestion(ExamID,	QuestionID) VALUES
                         (4,			6),
                         (10,		1);
 		
-
-				
+SELECT Email,Username,FullName FROM `Account`;
+SELECT * FROM position;
 
                     
 
