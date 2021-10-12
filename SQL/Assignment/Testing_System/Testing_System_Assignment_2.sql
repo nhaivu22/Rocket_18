@@ -11,7 +11,7 @@ DepartmentName	NVARCHAR (30) UNIQUE
 
  CREATE TABLE `Position`(
  PositionID 	TINYINT  UNSIGNED PRIMARY KEY AUTO_INCREMENT,
- PositionName 	ENUM('Dev', 'Test', 'Scrum Master', 'PM','VT') UNIQUE
+ PositionName 	ENUM('Dev', 'Test', 'Scrum Master', 'PM','VT') 
  );
  
  CREATE TABLE `Account`(
@@ -225,8 +225,45 @@ INSERT INTO ExamQuestion(ExamID,	QuestionID) VALUES
 		
 SELECT Email,Username,FullName FROM `Account`;
 SELECT * FROM position;
-
+INSERT INTO `Position`(PositionName) VALUES ('PM');
+UPDATE `Position`
+SET PositionName='PM'
+WHERE PositionID=5;
                     
-
+DELETE FROM `Position` WHERE PositionID=9;
 	
+INSERT INTO `Position`(PositionID,PositionName) VALUES ('8','Dev');
 
+SELECT *
+FROM `Account`;
+INSERT INTO `Account`(Username) VALUES ('TUT');
+SELECT * FROM department WHERE DepartmentID =5;
+SELECT *
+FROM Department
+WHERE DepartmentName='sale';
+
+UPDATE Department
+SET DepartmentName='TFR'
+WHERE DepartmentID=11;
+
+DELETE 
+FROM Department
+WHERE DepartmentID=13;
+SELECT *
+FROM `Account`
+WHERE AccountID=5;
+
+ INSERT INTO `Account`(	Username)		 VALUES
+					('Tuấn');
+      
+DELETE 
+FROM `Account`
+WHERE DepartmentID=13;
+      
+UPDATE `Account`
+SET Username='HUY'
+WHERE AccountID=12;
+
+SELECT *
+FROM `Account`;
+DELETE FROM Department WHERE DepartmentID=10;
